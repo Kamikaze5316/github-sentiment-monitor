@@ -19,7 +19,7 @@ from analytics import (
 from database import Database
 from demo_data import build_demo_messages
 from github_client import GitHubAPIError, GitHubClient, sync_repository
-from sentiment import DEFAULT_MODEL, SentimentAnalyzer
+from sentiment import DEFAULT_MODEL, SentimentAnalyzer, select_inference_device
 
 
 load_dotenv()
@@ -37,8 +37,16 @@ db = Database(DB_PATH)
 
 
 @st.cache_resource(show_spinner=False)
+def get_runtime_device() -> tuple[int, str]:
+    return select_inference_device()
+
+
+INFERENCE_DEVICE_INDEX, INFERENCE_DEVICE_LABEL = get_runtime_device()
+
+
+@st.cache_resource(show_spinner=False)
 def get_analyzer(model_name: str) -> SentimentAnalyzer:
-    return SentimentAnalyzer(model_name)
+    return SentimentAnalyzer(model_name, device_index=INFERENCE_DEVICE_INDEX)
 
 
 def parse_repositories(raw: str) -> list[str]:
@@ -236,6 +244,7 @@ with st.sidebar:
     st.caption("Автообновление работает, пока вкладка приложения открыта.")
     st.divider()
     st.caption(f"Модель тональности: `{MODEL_NAME}`")
+    st.caption(f"Устройство модели: `{INFERENCE_DEVICE_LABEL}`")
     st.caption(f"SQLite: `{DB_PATH}`")
 
 try:
