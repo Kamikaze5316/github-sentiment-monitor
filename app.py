@@ -246,6 +246,49 @@ with st.sidebar:
     st.caption(f"Модель тональности: `{MODEL_NAME}`")
     st.caption(f"Устройство модели: `{INFERENCE_DEVICE_LABEL}`")
     st.caption(f"SQLite: `{DB_PATH}`")
+    
+# Очистка базы данных с подтверждением
+if st.button("🗑️ Очистить базу данных", use_container_width=True):
+    st.session_state["confirm_database_clear"] = True
+
+if st.session_state.get("confirm_database_clear", False):
+    st.warning(
+        "Внимание! Все сохранённые сообщения, результаты анализа "
+        "и курсоры синхронизации будут удалены."
+    )
+
+    confirm_col, cancel_col = st.columns(2)
+
+    with confirm_col:
+        if st.button(
+            "Да, очистить",
+            type="primary",
+            use_container_width=True,
+            key="confirm_clear_db"
+        ):
+            db.clear_all()
+
+            # Сбрасываем информацию о предыдущей синхронизации
+            st.session_state.pop("last_sync_logs", None)
+            st.session_state.pop("last_sync_at", None)
+
+            # Не допускаем немедленного запуска автосинхронизации
+            st.session_state["last_auto_sync"] = datetime.now(timezone.utc)
+
+            st.session_state["confirm_database_clear"] = False
+
+            st.success("База данных успешно очищена!")
+            st.rerun()
+
+    with cancel_col:
+        if st.button(
+            "Отмена",
+            use_container_width=True,
+            key="cancel_clear_db"
+        ):
+            st.session_state["confirm_database_clear"] = False
+            st.rerun()
+
 
 try:
     repositories = parse_repositories(repositories_raw)
