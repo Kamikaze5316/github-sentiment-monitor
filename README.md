@@ -43,8 +43,22 @@
 
 GPU ускоряет именно инференс модели тональности. Получение данных из GitHub, SQLite, обработка таблиц Pandas, TF-IDF/KMeans и анализ временных интервалов продолжают выполняться на CPU.
 
-На Windows наличие видеокарты NVIDIA само по себе не гарантирует использование GPU: необходима сборка PyTorch с поддержкой CUDA и совместимый драйвер NVIDIA. Чтобы установить подходящую сборку, откройте [официальный селектор установки PyTorch](https://pytorch.org/get-started/locally/), выберите Windows, Pip, Python и совместимую версию CUDA, затем выполните предложенную команду установки внутри виртуального окружения проекта. После установки проверьте доступность CUDA:
+На Windows наличие видеокарты NVIDIA само по себе не гарантирует использование GPU: необходима сборка PyTorch с поддержкой CUDA и совместимый драйвер NVIDIA. Чтобы установить подходящую сборку, откройте [официальный селектор установки PyTorch](https://pytorch.org/get-started/locally/), выберите Windows, Pip, Python и совместимую версию CUDA, затем выполните предложенную команду установки внутри виртуального окружения проекта. Либо выполните следующее:
 
+1. Открой PowerShell в папке проекта
+```powershell
+cd C:\Users\Kamikaze\Downloads\github-sentiment-monitor
+```
+2. Активируй виртуальное окружение
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+В начале строки должно появиться (.venv).
+```powershell
+python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cu132
+```
+
+После установки проверьте доступность CUDA:
 ```powershell
 .venv\Scripts\python.exe -c "import torch; print('CUDA доступна:', torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'Будет использоваться CPU')"
 ```
