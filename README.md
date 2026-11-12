@@ -24,7 +24,7 @@
 2. Скачайте репозиторий через кнопку **Code → Download ZIP** и распакуйте архив либо клонируйте его командой:
 
    ```powershell
-   git clone https://github.com/USERNAME/github-sentiment-monitor.git
+   git clone https://github.com/Kamikaze5316/github-sentiment-monitor.git
    cd github-sentiment-monitor
    ```
 
